@@ -1,45 +1,58 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { detectIntent } from "@/lib/intent";
+
 export default function Home() {
+  const [intent, setIntent] = useState("loading");
+
+  useEffect(() => {
+    setIntent(detectIntent());
+  }, []);
+
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center text-center px-6 bg-white">
+    <main className="min-h-screen flex items-center justify-center text-center px-6">
 
       <div className="max-w-2xl space-y-6">
 
-        <h1 className="text-6xl font-bold tracking-tight">
-          PDRP-88
-        </h1>
+        <h1 className="text-6xl font-bold">PDRP-88</h1>
 
-        <p className="text-xl text-gray-600">
+        <p className="text-gray-600">
           Post-Disconnection Recovery Protocol
         </p>
 
-        <p className="text-gray-700 leading-relaxed">
-          This is not just a landing page. It is a recovery interface —
-          designed to help humans re-enter digital systems after overload,
-          absence, or cognitive reset.
-        </p>
+        {intent === "fa_user" && (
+          <p className="text-lg text-gray-700">
+            شما وارد یک سیستم بازیابی دیجیتال شده‌اید.
+          </p>
+        )}
+
+        {intent === "en_user" && (
+          <p className="text-lg text-gray-700">
+            You are entering a digital recovery environment.
+          </p>
+        )}
+
+        {intent === "global_user" && (
+          <p className="text-lg text-gray-700">
+            Adaptive system initializing...
+          </p>
+        )}
 
         <div className="flex gap-4 justify-center pt-6">
-          <a
-            href="/en"
-            className="px-6 py-3 bg-black text-white rounded-xl"
-          >
-            Enter English
+          <a className="px-6 py-3 bg-black text-white rounded-xl" href="/en">
+            Enter
           </a>
-
-          <a
-            href="/fa"
-            className="px-6 py-3 border border-black rounded-xl"
-          >
-            ورود فارسی
+          <a className="px-6 py-3 border rounded-xl" href="/fa">
+            تغییر زبان
           </a>
         </div>
 
-        <div className="pt-10 text-sm text-gray-400">
-          LEVEL 20 · PRODUCT-AWARE UI ACTIVE
+        <div className="text-sm text-gray-400 pt-10">
+          LEVEL 21 · ADAPTIVE MODE ACTIVE
         </div>
 
       </div>
-
     </main>
   );
 }
