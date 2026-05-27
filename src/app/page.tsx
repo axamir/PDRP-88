@@ -1,41 +1,44 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { runCompany } from "@/agents/company";
+import { revenueEngine } from "@/revenue/engine";
 
 export default function Home() {
   const [state, setState] = useState<any>(null);
 
   useEffect(() => {
-    const result = runCompany("optimize product and increase retention");
+    const events = ["page_view", "cta_click", "cta_click", "language_select"];
+
+    const result = events.map(revenueEngine).pop();
     setState(result);
   }, []);
 
-  if (!state) return <div>Launching AI company...</div>;
+  if (!state) return <div>Calculating revenue model...</div>;
 
   return (
-    <main className="min-h-screen bg-white flex items-center justify-center px-6">
+    <main className="min-h-screen flex items-center justify-center bg-white px-6">
 
-      <div className="max-w-3xl space-y-6 text-center">
+      <div className="max-w-3xl text-center space-y-6">
 
         <h1 className="text-5xl font-bold">
-          AI COMPANY CORE
+          REVENUE ENGINE ACTIVE
         </h1>
 
         <p className="text-gray-600">
-          Multi-Agent Organization Simulation
+          USER TIER: {state.tier}
         </p>
 
-        <div className="text-left bg-black text-white p-4 rounded-xl">
-          {state.decisions.map((d: any, i: number) => (
-            <div key={i}>
-              • {d.from}: {d.content}
-            </div>
-          ))}
+        <p className="text-gray-700">
+          SCORE: {state.score}
+        </p>
+
+        <div className="bg-black text-white p-4 rounded-xl">
+          <p>PLAN: {state.pricing.plan}</p>
+          <p>PRICE: ${state.pricing.price}</p>
         </div>
 
         <div className="text-sm text-gray-400 pt-6">
-          LEVEL 31 · ORGANIZATION ENGINE ACTIVE
+          LEVEL 32 · MONETIZATION SYSTEM ACTIVE
         </div>
 
       </div>
