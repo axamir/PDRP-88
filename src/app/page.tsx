@@ -1,51 +1,38 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { selfReflectSystem } from "@/lib/self-reflect";
+import { runAutopilot } from "@/lib/autopilot";
 
 export default function Home() {
-  const [system, setSystem] = useState<any>(null);
+  const [state, setState] = useState<any>(null);
 
   useEffect(() => {
-    const result = selfReflectSystem();
-    setSystem(result);
+    const result = runAutopilot();
+    setState(result);
   }, []);
 
-  if (!system) return <div>Analyzing system...</div>;
+  if (!state) return <div>Booting autonomous system...</div>;
 
   return (
     <main className="min-h-screen bg-white flex items-center justify-center px-6">
 
-      <div className="max-w-4xl space-y-6 text-center">
+      <div className="max-w-3xl space-y-6 text-center">
 
         <h1 className="text-5xl font-bold">
-          SELF-REWRITING PRODUCT
+          AUTONOMOUS DEPLOYMENT SYSTEM
         </h1>
 
         <p className="text-gray-600">
-          SYSTEM HEALTH: {system.systemHealth}
+          STATUS: {state.status}
         </p>
 
-        <div className="text-left bg-gray-100 p-4 rounded-xl">
-          <h2 className="font-bold mb-2">CODE INSIGHTS</h2>
-          {system.insights.map((i: any, idx: number) => (
-            <div key={idx}>
-              • {i.file} → {i.suggestion}
-            </div>
-          ))}
-        </div>
-
-        <div className="text-left bg-black text-white p-4 rounded-xl">
-          <h2 className="font-bold mb-2">REWRITE PLAN</h2>
-          {system.plan.map((p: any, idx: number) => (
-            <div key={idx}>
-              • {p.file}: {p.patch}
-            </div>
-          ))}
+        <div className="bg-black text-white p-4 rounded-xl text-left">
+          <p>Commit: {String(state.commit)}</p>
+          <p>Deploy: {state.deployment}</p>
         </div>
 
         <div className="text-sm text-gray-400 pt-6">
-          LEVEL 29 · SELF-REWRITING ENGINE ACTIVE
+          LEVEL 30 · SELF-DEPLOYMENT ACTIVE
         </div>
 
       </div>
