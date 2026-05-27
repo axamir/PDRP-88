@@ -1,51 +1,51 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { runStartupLoop } from "@/lib/startup-loop";
+import { selfReflectSystem } from "@/lib/self-reflect";
 
 export default function Home() {
-  const [state, setState] = useState<any>(null);
+  const [system, setSystem] = useState<any>(null);
 
   useEffect(() => {
-    const result = runStartupLoop();
-    setState(result);
+    const result = selfReflectSystem();
+    setSystem(result);
   }, []);
 
-  if (!state) return <div>Loading startup engine...</div>;
+  if (!system) return <div>Analyzing system...</div>;
 
   return (
     <main className="min-h-screen bg-white flex items-center justify-center px-6">
 
-      <div className="max-w-3xl space-y-6 text-center">
+      <div className="max-w-4xl space-y-6 text-center">
 
         <h1 className="text-5xl font-bold">
-          AUTONOMOUS STARTUP
+          SELF-REWRITING PRODUCT
         </h1>
 
         <p className="text-gray-600">
-          STATUS: {state.status}
+          SYSTEM HEALTH: {system.systemHealth}
         </p>
 
         <div className="text-left bg-gray-100 p-4 rounded-xl">
-          <h2 className="font-bold mb-2">KPIs</h2>
-          {state.kpis.map((k: any, i: number) => (
-            <div key={i}>
-              {k.name}: {k.value.toFixed(2)} / {k.target}
+          <h2 className="font-bold mb-2">CODE INSIGHTS</h2>
+          {system.insights.map((i: any, idx: number) => (
+            <div key={idx}>
+              • {i.file} → {i.suggestion}
             </div>
           ))}
         </div>
 
         <div className="text-left bg-black text-white p-4 rounded-xl">
-          <h2 className="font-bold mb-2">AUTONOMOUS ACTIONS</h2>
-          {state.actions.map((a: any, i: number) => (
-            <div key={i}>
-              • {a.problem} → {a.fix}
+          <h2 className="font-bold mb-2">REWRITE PLAN</h2>
+          {system.plan.map((p: any, idx: number) => (
+            <div key={idx}>
+              • {p.file}: {p.patch}
             </div>
           ))}
         </div>
 
         <div className="text-sm text-gray-400 pt-6">
-          LEVEL 28 · AUTONOMOUS STARTUP LOOP ACTIVE
+          LEVEL 29 · SELF-REWRITING ENGINE ACTIVE
         </div>
 
       </div>
