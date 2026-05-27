@@ -1,17 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { runAutopilot } from "@/lib/autopilot";
+import { runCompany } from "@/agents/company";
 
 export default function Home() {
   const [state, setState] = useState<any>(null);
 
   useEffect(() => {
-    const result = runAutopilot();
+    const result = runCompany("optimize product and increase retention");
     setState(result);
   }, []);
 
-  if (!state) return <div>Booting autonomous system...</div>;
+  if (!state) return <div>Launching AI company...</div>;
 
   return (
     <main className="min-h-screen bg-white flex items-center justify-center px-6">
@@ -19,20 +19,23 @@ export default function Home() {
       <div className="max-w-3xl space-y-6 text-center">
 
         <h1 className="text-5xl font-bold">
-          AUTONOMOUS DEPLOYMENT SYSTEM
+          AI COMPANY CORE
         </h1>
 
         <p className="text-gray-600">
-          STATUS: {state.status}
+          Multi-Agent Organization Simulation
         </p>
 
-        <div className="bg-black text-white p-4 rounded-xl text-left">
-          <p>Commit: {String(state.commit)}</p>
-          <p>Deploy: {state.deployment}</p>
+        <div className="text-left bg-black text-white p-4 rounded-xl">
+          {state.decisions.map((d: any, i: number) => (
+            <div key={i}>
+              • {d.from}: {d.content}
+            </div>
+          ))}
         </div>
 
         <div className="text-sm text-gray-400 pt-6">
-          LEVEL 30 · SELF-DEPLOYMENT ACTIVE
+          LEVEL 31 · ORGANIZATION ENGINE ACTIVE
         </div>
 
       </div>
