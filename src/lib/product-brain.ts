@@ -1,37 +1,24 @@
+import { generateFeatures } from "./feature-generator";
+import { createExperiment } from "./experiment-factory";
+
 type Intent = "fa_user" | "en_user" | "global_user";
 
-type ProductState = {
-  message: string;
-  funnel: "awareness" | "activation" | "conversion";
-  cta: string;
-};
+export function productBrainV2(intent: Intent, score: number) {
 
-export function productBrain(intent: Intent, score: number): ProductState {
+  const features = generateFeatures(intent, score);
 
-  // Cold user → awareness
-  if (score < 3) {
-    return {
-      message: intent === "fa_user"
-        ? "شما در حال ورود به یک سیستم بازیابی هستید"
-        : "You are entering a recovery environment",
-      funnel: "awareness",
-      cta: intent === "fa_user" ? "شروع" : "Start",
-    };
-  }
+  const experiments = features.map(createExperiment);
 
-  // Warm user → activation
-  if (score < 7) {
-    return {
-      message: "System adapting to your behavior...",
-      funnel: "activation",
-      cta: intent === "fa_user" ? "ادامه" : "Continue",
-    };
-  }
+  const primaryFeature = features
+    .sort((a, b) =>
+      a.priority === "high" ? -1 : 1
+    )[0];
 
-  // Hot user → conversion
   return {
-    message: "Optimized experience unlocked",
-    funnel: "conversion",
-    cta: intent === "fa_user" ? "ورود نهایی" : "Enter System",
+    intent,
+    score,
+    features,
+    experiments,
+    primaryFeature,
   };
 }

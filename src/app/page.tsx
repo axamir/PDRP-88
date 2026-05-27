@@ -3,57 +3,60 @@
 import { useEffect, useState } from "react";
 import { detectIntent } from "@/lib/intent";
 import { track } from "@/lib/events";
-import { pushMemory } from "@/lib/memory";
-import { computeScore } from "@/lib/score-engine";
-import { productBrain } from "@/lib/product-brain";
+import { productBrainV2 } from "@/lib/product-brain";
 
 export default function Home() {
-  const [state, setState] = useState({
-    message: "",
-    funnel: "awareness",
-    cta: "Start",
-  });
+  const [brain, setBrain] = useState<any>(null);
 
   useEffect(() => {
     const intent = detectIntent();
 
-    pushMemory("intent", intent);
+    const score = Math.random() * 10; // simulated learning signal
 
-    const score = computeScore();
-    const brain = productBrain(intent, score);
+    const result = productBrainV2(intent, score);
 
-    setState(brain);
+    setBrain(result);
 
     track("page_view", { intent, score });
   }, []);
 
-  const handleClick = () => {
-    track("cta_click", { type: state.funnel });
-    pushMemory("ctr", 10);
-  };
+  if (!brain) return <div>Loading system...</div>;
 
   return (
-    <main className="min-h-screen flex items-center justify-center text-center px-6 bg-white">
+    <main className="min-h-screen flex items-center justify-center px-6 bg-white">
 
-      <div className="max-w-2xl space-y-6">
+      <div className="max-w-3xl space-y-6 text-center">
 
-        <h1 className="text-4xl font-bold">
+        <h1 className="text-5xl font-bold">
           PDRP-88
         </h1>
 
-        <p className="text-lg text-gray-700">
-          {state.message}
+        <p className="text-gray-700 text-lg">
+          Primary Feature: {brain.primaryFeature.title}
         </p>
 
-        <button
-          onClick={handleClick}
-          className="px-6 py-3 bg-black text-white rounded-xl"
-        >
-          {state.cta}
-        </button>
+        <div className="text-left bg-gray-100 p-4 rounded-xl">
+          <h2 className="font-bold mb-2">Generated Features</h2>
+          <ul className="space-y-1">
+            {brain.features.map((f: any) => (
+              <li key={f.id}>• {f.title}</li>
+            ))}
+          </ul>
+        </div>
 
-        <div className="text-sm text-gray-400 pt-10">
-          LEVEL 26 · AUTONOMOUS PRODUCT BRAIN ACTIVE
+        <div className="text-left bg-black text-white p-4 rounded-xl">
+          <h2 className="font-bold mb-2">Auto Experiments</h2>
+          <ul className="space-y-1">
+            {brain.experiments.map((e: any) => (
+              <li key={e.id}>
+                {e.variantA} ↔ {e.variantB}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="text-sm text-gray-400 pt-6">
+          LEVEL 27 · SELF-GENERATING PRODUCT SYSTEM ACTIVE
         </div>
 
       </div>
