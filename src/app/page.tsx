@@ -2,28 +2,34 @@
 
 import { useEffect, useState } from "react";
 import { detectIntent } from "@/lib/intent";
-import { getVariant } from "@/lib/experiment";
 import { track } from "@/lib/events";
-import { autoTrackDecision } from "@/lib/decision";
+import { pushMemory } from "@/lib/memory";
+import { computeScore } from "@/lib/score-engine";
+import { productBrain } from "@/lib/product-brain";
 
 export default function Home() {
-  const [intent, setIntent] = useState("global_user");
-  const [variant, setVariant] = useState<"A" | "B">("A");
+  const [state, setState] = useState({
+    message: "",
+    funnel: "awareness",
+    cta: "Start",
+  });
 
   useEffect(() => {
-    const detected = detectIntent();
-    setIntent(detected);
+    const intent = detectIntent();
 
-    const v = getVariant("cta");
-    setVariant(v);
+    pushMemory("intent", intent);
 
-    track("page_view", { intent: detected, variant: v });
+    const score = computeScore();
+    const brain = productBrain(intent, score);
+
+    setState(brain);
+
+    track("page_view", { intent, score });
   }, []);
 
-  const handleCTA = (type: string) => {
-    const action = autoTrackDecision("cta", type);
-
-    console.log("DECISION:", action);
+  const handleClick = () => {
+    track("cta_click", { type: state.funnel });
+    pushMemory("ctr", 10);
   };
 
   return (
@@ -31,40 +37,23 @@ export default function Home() {
 
       <div className="max-w-2xl space-y-6">
 
-        <h1 className="text-6xl font-bold">PDRP-88</h1>
+        <h1 className="text-4xl font-bold">
+          PDRP-88
+        </h1>
 
-        <p className="text-gray-600">
-          Self-Optimizing Recovery System
+        <p className="text-lg text-gray-700">
+          {state.message}
         </p>
 
-        <p className="text-gray-700">
-          {intent === "fa_user" && "سیستم در حال تنظیم خودکار برای فارسی‌زبان‌ها"}
-          {intent === "en_user" && "System adapting for English users"}
-          {intent === "global_user" && "Learning user behavior..."}
-        </p>
-
-        <div className="flex gap-4 justify-center pt-6">
-
-          <a
-            href="/en"
-            onClick={() => handleCTA("enter_en")}
-            className="px-6 py-3 bg-black text-white rounded-xl"
-          >
-            Enter
-          </a>
-
-          <a
-            href="/fa"
-            onClick={() => handleCTA("enter_fa")}
-            className="px-6 py-3 border rounded-xl"
-          >
-            فارسی
-          </a>
-
-        </div>
+        <button
+          onClick={handleClick}
+          className="px-6 py-3 bg-black text-white rounded-xl"
+        >
+          {state.cta}
+        </button>
 
         <div className="text-sm text-gray-400 pt-10">
-          LEVEL 24 · SELF-OPTIMIZATION ACTIVE
+          LEVEL 26 · AUTONOMOUS PRODUCT BRAIN ACTIVE
         </div>
 
       </div>
